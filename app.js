@@ -2,6 +2,7 @@ const database = require("./database")
 const express = require('express');
 
 const PORT = process.env.PORT || 3000;
+database.syncDataBase();
 
 const app = express();
 app.use(express.json());
