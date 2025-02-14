@@ -1,21 +1,23 @@
+require('dotenv').config();
+const cors = require('cors');
 const database = require("./database")
 const express = require('express');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 database.syncDataBase();
 
 const app = express();
+app.use(cors({
+    origin: process.env.CORS_ORIGIN
+}))
 app.use(express.json());
 
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
-app.get('/status', (request, response) => {
-    const status = {
-        "Status": "Running"
-    };
-    response.send(status);
+app.get('/', (request, response) => {
+    response.send("Running");
 });
 
 app.get('/jugador', async (request, response) => {
@@ -41,3 +43,4 @@ app.get('/partidos', async (request, response) => {
     const partidos = await database.getAllPartidos();
     response.send(partidos);
 });
+
