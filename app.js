@@ -31,16 +31,16 @@ app.get('/jugador', async (request, response) => {
         response.sendStatus(404);
         return;
     }
-    response.send(jugador);
+    response.send(JSON.stringify(jugador, null, 4));
 });
 
 app.get('/jugadores', async (request, response) => {
     const jugadores = await database.getAllJugadores();
-    response.send(jugadores);
+    response.send(JSON.stringify(jugadores, null, 4));
 });
 
 app.get('/partidos', async (request, response) => {
     const partidos = await database.getAllPartidos();
-    response.send(partidos);
+    response.send(JSON.stringify(partidos, null, 4));
 });
 
