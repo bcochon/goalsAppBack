@@ -136,7 +136,7 @@ app.delete("/jugadores/goles", verifyToken, async (req, res) => {
 });
 
 app.post("/partidos", verifyToken, async (req, res) => {
-    const fecha = req.body.lugar;
+    const fecha = req.body.fecha;
     if (!fecha) {
         return res.status(400).json({ message: "Fecha inválida" });
     }
