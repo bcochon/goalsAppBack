@@ -239,7 +239,7 @@ async function cargarGoles(nombreJugador, fecha, goles) {
     }
 }
 
-async function eliminarGoles(nombreJugador, fecha, goles) {
+async function eliminarGoles(nombreJugador, fecha) {
     const jugador = await readData(Jugadores, {nombre : nombreJugador});
     if(!jugador) {
         console.error(`No se pudieron eliminar los goles. No existe el jugador ${nombreJugador}`);
@@ -253,7 +253,7 @@ async function eliminarGoles(nombreJugador, fecha, goles) {
     try {
         await jugador.removePartido(partido);
         console.log(`Goles removidos con éxito para el jugador ${nombreJugador}`);
-        return goles_x_partido;
+        return;
     } catch (e) {
         console.error(`Error al eliminar los goles del jugador ${nombreJugador}\n`, e);
     }
@@ -295,11 +295,18 @@ async function getJugador(nombre) {
         curiosidad : jugador.curiosidad,
         goles : 0,
         partidos : 0,
+        detallePartidos: [],
     }
     try {
         const partidos = (await getGolesPartido(nombre, null)) || [];
         jugadorObj.partidos = partidos.length;
-        partidos.forEach(p => { jugadorObj.goles += p.goles; });
+        partidos.forEach(p => { 
+            jugadorObj.goles += p.goles; 
+            jugadorObj.detallePartidos.push({
+                fecha : p.partidoFecha,
+                goles : p.goles
+            })
+        });
     } catch (e) {
         console.error(`Error al leer los partidos del jugador ${nombre}\n`, e);
     }
@@ -359,6 +366,7 @@ async function getPartido(fecha) {
 
 module.exports = {
     syncDataBase,
+    createDate,
     createJugador,
     deleteJugador,
     editJugador,
