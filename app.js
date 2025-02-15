@@ -86,7 +86,7 @@ app.post("/jugadores", verifyToken, async (req, res) => {
     const caracteristica = req.body.caracteristica || null;
     const curiosidad = req.body.curiosidad || null;
     try {
-        const result = await database.createJugador(nombre, nacimiento, caracteristica, curiosidad);
+        const result = await database.createJugador(nombre.trim(), nacimiento, caracteristica, curiosidad);
         if(!result) {
             return res.status(401).json({ message: "Error al crear nuevo jugador" });
         }
@@ -107,7 +107,7 @@ app.put("/jugadores/goles", verifyToken, async (req, res) => {
     if (!goles)
         return res.status(400).json({ message: "Goles is required" });
     try {
-        const result = await database.cargarGoles(nombre, fecha, goles);
+        const result = await database.cargarGoles(nombre.trim(), fecha, goles);
         if(!result) {
             return res.status(401).json({ message: "Error al cargar goles al jugador" });
         }
@@ -125,7 +125,7 @@ app.delete("/jugadores/goles", verifyToken, async (req, res) => {
     if (!fecha)
         return res.status(400).json({ message: "Fecha is required" });
     try {
-        const result = await database.eliminarGoles(nombre, fecha);
+        const result = await database.eliminarGoles(nombre.trim(), fecha);
         if(!result) {
             return res.status(401).json({ message: "Error al eliminar goles al jugador" });
         }
@@ -142,7 +142,7 @@ app.post("/partidos", verifyToken, async (req, res) => {
     }
     const lugar = req.body.lugar || null;
     try {
-        const result = await database.createPartido(fecha, lugar);
+        const result = await database.createPartido(fecha, lugar.trim());
         if(!result) {
             return res.status(401).json({ message: "Error al crear nuevo partido" });
         }
