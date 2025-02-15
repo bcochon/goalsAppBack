@@ -9,7 +9,8 @@ const Partidos = sequelize.define('partidos', {
         unique : true,
         primaryKey : true,
     },
-    lugar : DataTypes.STRING
+    lugar : DataTypes.STRING,
+    descripcion : DataTypes.TEXT,
 })
 const Jugadores = sequelize.define('jugadores', {
     nombre : {
@@ -184,8 +185,8 @@ async function editJugador(nombre, edition) {
     return cambios;
 }
 
-async function createPartido(fecha, lugar) {
-    const partido = await writeData(Partidos, {fecha, lugar});
+async function createPartido(fecha, lugar, descripcion) {
+    const partido = await writeData(Partidos, {fecha, lugar, descripcion});
     if(!partido)
         return;
     console.log(`Partido ${fecha} creado con éxito`);
@@ -334,6 +335,12 @@ async function getAllJugadores() {
     return jugadores;
 }
 
+function sortPartidos(partidoA, partidoB) {
+    const dateA = new Date(Date.parse(partidoA.fecha+" GMT-0300"));
+    const dateB = new Date(Date.parse(partidoB.fecha+" GMT-0300"));
+    return dateA - dateB;
+}
+
 async function getAllPartidos() {
     const partidos = [];
     const fechas = await getRowValues(Partidos, 'fecha');
@@ -341,7 +348,7 @@ async function getAllPartidos() {
         const partido = await getPartido(fecha);
         partidos.push(partido);
     }
-    return partidos;
+    return partidos.sort(sortPartidos);
 }
 
 async function getPartido(fecha) {
@@ -353,6 +360,7 @@ async function getPartido(fecha) {
     const partidoObj = {
         fecha : partido.fecha,
         lugar : partido.lugar,
+        descripcion : partido.descripcion,
         jugadores : [],
     }
     try {
@@ -395,8 +403,6 @@ async function test() {
     // await cargarGoles('Dante', '2024-12-09', 7);
     // await cargarGoles('Mate', '2024-12-09', 18);
     await syncDataBase();
-    const jugadores = await getAllJugadores();
-    console.log(JSON.stringify(jugadores, null, 4), "\n\n");
     const partidos = await getAllPartidos();
     console.log(JSON.stringify(partidos, null, 4));
 }
