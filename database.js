@@ -254,7 +254,7 @@ async function eliminarGoles(nombreJugador, fecha) {
     try {
         await jugador.removePartido(partido);
         console.log(`Goles removidos con éxito para el jugador ${nombreJugador}`);
-        return;
+        return 1;
     } catch (e) {
         console.error(`Error al eliminar los goles del jugador ${nombreJugador}\n`, e);
     }
@@ -301,7 +301,7 @@ async function getJugador(nombre) {
     try {
         const partidos = (await getGolesPartido(nombre, null)) || [];
         jugadorObj.partidos = partidos.length;
-        partidos.forEach(p => { 
+        partidos.sort(sortPartidos).forEach(p => { 
             jugadorObj.goles += p.goles; 
             jugadorObj.detallePartidos.push({
                 fecha : p.partidoFecha,
