@@ -301,13 +301,14 @@ async function getJugador(nombre) {
     try {
         const partidos = (await getGolesPartido(nombre, null)) || [];
         jugadorObj.partidos = partidos.length;
-        partidos.sort(sortPartidos).forEach(p => { 
+        partidos.forEach(p => { 
             jugadorObj.goles += p.goles; 
             jugadorObj.detallePartidos.push({
                 fecha : p.partidoFecha,
                 goles : p.goles
             })
         });
+        jugadorObj.detallePartidos.sort(sortPartidos);
     } catch (e) {
         console.error(`Error al leer los partidos del jugador ${nombre}\n`, e);
     }
@@ -403,6 +404,8 @@ async function test() {
     // await cargarGoles('Dante', '2024-12-09', 7);
     // await cargarGoles('Mate', '2024-12-09', 18);
     await syncDataBase();
-    const partidos = await getAllPartidos();
-    console.log(JSON.stringify(partidos, null, 4));
+    // const partidos = await getAllPartidos();
+    // console.log(JSON.stringify(partidos, null, 4));
+    const jugador = await getJugador("Pietro");
+    console.log(JSON.stringify(jugador, null, 4));
 }
