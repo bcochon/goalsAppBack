@@ -96,6 +96,29 @@ app.post("/jugadores", verifyToken, async (req, res) => {
     }
 });
 
+app.put("/jugadores", verifyToken, async (req, res) => {
+    const nombre = req.body.nombre;
+    if (!nombre) {
+        return res.status(400).json({ message: "Nombre is required" });
+    }
+    const cambios = {};
+    if(req.body.nacimiento)
+        cambios.nacimiento = req.body.nacimiento;
+    if(req.body.caracteristica)
+        cambios.caracteristica = req.body.caracteristica;
+    if(req.body.curiosidad)
+        cambios.curiosidad = req.body.curiosidad;
+    try {
+        const result = await database.editJugador(nombre.trim(), cambios);
+        if(!result) {
+            return res.status(401).json({ message: "Error al editar jugador" });
+        }
+        return res.status(200).json({ message: "Jugador editado con éxito" });
+    } catch(e) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 app.put("/jugadores/goles", verifyToken, async (req, res) => {
     const nombre = req.body.nombre;
     if (!nombre)
@@ -141,8 +164,9 @@ app.post("/partidos", verifyToken, async (req, res) => {
         return res.status(400).json({ message: "Fecha inválida" });
     }
     const lugar = req.body.lugar || null;
+    const descripcion = req.body.descripcion || null;
     try {
-        const result = await database.createPartido(fecha, lugar.trim());
+        const result = await database.createPartido(fecha, lugar.trim(), descripcion);
         if(!result) {
             return res.status(401).json({ message: "Error al crear nuevo partido" });
         }
